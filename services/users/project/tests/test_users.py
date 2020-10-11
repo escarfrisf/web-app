@@ -7,6 +7,7 @@ import unittest
 from project.tests.base import BaseTestCase
 from project import db
 from project.api.models import User
+from sqlalchemy import exc
 
 def add_user(username, email):
     user = User(username=username, email=email)
