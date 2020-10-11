@@ -1,8 +1,7 @@
-# imagen base
+# base image
 FROM python:3.8.5-alpine
 
-# new
-# install dependencies
+# instalando dependencias
 RUN apk update && \
     apk add --virtual build-deps gcc python3-dev musl-dev && \
     apk add postgresql-dev && \
@@ -11,18 +10,16 @@ RUN apk update && \
 # estableciendo directorio de trabajo
 WORKDIR /usr/src/app
 
-# agregando e instalando requerimientos
+# agregando e instalando requirements
 COPY ./requirements.txt /usr/src/app/requirements.txt
 RUN pip install -r requirements.txt
 
-# new
-# add entrypoint.sh
-COPY ./entrypoint.sh /usr/src/app/entrypoint.sh
-RUN chmod +x /usr/src/app/entrypoint.sh
- 
-# copiando app
+# agregando entrypoint.sh
+COPY ./entrypoint-prod.sh /usr/src/app/entrypoint-prod.sh
+RUN chmod +x /usr/src/app/entrypoint-prod.sh
+
+# agregando app
 COPY . /usr/src/app
 
-# new
-# run server
-CMD ["/usr/src/app/entrypoint.sh"]
+# ejecutar server
+CMD ["/usr/src/app/entrypoint-prod.sh"]

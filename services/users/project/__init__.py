@@ -1,25 +1,35 @@
 # services/users/project/__init__.py
 
-from flask import Flask, jsonify
-from flask_restful import Resource, Api
+
+import os
+
+from flask import Flask 
+from flask_sqlalchemy import SQLAlchemy
+
+# instantiate the db
+db = SQLAlchemy()
 
 
-# instantiate the app
-app = Flask(__name__)
+# nuevo
+def create_app(script_info=None):
 
-api = Api(app)
+    # instanciado la  app
+    app = Flask(__name__)
 
-#@app.route('/users/ping', methods=['GET'])
+    # set config
+    app_settings = os.getenv('APP_SETTINGS')
+    app.config.from_object(app_settings)
 
-# establelciendo configuracion
-app.config.from_object('project.config.DevelopmentConfig')
+    # configurar la extension
+    db.init_app(app)
 
-class UsersPing(Resource):
-    def get(self):
-        return {
-        'status': 'success',
-        'message': 'pong!'
-    }
+    # registrar blueprints
+    from project.api.users import users_blueprint
+    app.register_blueprint(users_blueprint)
 
+    # contexto shell para flask cli
+    @app.shell_context_processor
+    def ctx():
+        return {'app': app, 'db': db}
 
-api.add_resource(UsersPing, '/users/ping')
+    return app
