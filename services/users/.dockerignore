@@ -1,0 +1,5 @@
+env 
+.dockerignore 
+Dockerfile 
+Dockerfile-prod
+open services/users/htmlcov/index.html
