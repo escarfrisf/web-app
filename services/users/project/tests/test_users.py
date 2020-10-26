@@ -1,6 +1,4 @@
 # services/users/project/tests/test_users.py
-
-
 import json
 import unittest
 
@@ -9,11 +7,13 @@ from project import db
 from project.api.models import User
 from sqlalchemy import exc
 
+
 def add_user(username, email):
     user = User(username=username, email=email)
     db.session.add(user)
     db.session.commit()
     return user
+
 
 class TestUserService(BaseTestCase):
     """Pruebas para el servicio de usuarios."""
@@ -26,7 +26,7 @@ class TestUserService(BaseTestCase):
         self.assertIn('pong!', data['message'])
         self.assertIn('success', data['status'])
 
-def test_add_user(self):
+  def test_add_user(self):
     """Ensure a new user can be added to the database."""
     with self.client:
         response = self.client.post(
@@ -145,6 +145,42 @@ def test_all_users(self):
         self.assertIn(
             'dan.barrientos@gmail.com', data['data']['users'][1]['email'])
         self.assertIn('success', data['status'])
+
+def test_main_no_users(self):
+    """Asegurando que la ruta principal se comporte correctamente cuando no se 
+    hayan agregado usuarios a la base de datos."""
+
+    response = self.client.get('/')
+    self.assertEqual(response.status_code, 200)
+    self.assertIn(b'All Users', response.data)
+    self.assertIn(b'<p>No users!</p>', response.data)
+
+def test_main_with_users(self):
+    """Asegurando que la ruta principal se comporte correctamente cuando se
+    hayan agregado usuarios a la base de datos."""
+
+    add_user('dan.barrientos', 'danbarrientos@upeu.edu.pe')
+    add_user('dan.barrientos', 'danbarrientos@gmail.com')
+    with self.client:
+        response = self.client.get('/')
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b'All Users', response.data)
+        self.assertNotIn(b'<p>No users!</p>', response.data)
+        self.assertIn(b'dan.barrientos', response.data)
+        self.assertIn(b'dan.barrientos', response.data)
+
+def test_main_add_user(self):
+    """
+   Asegurando que se pueda agregar un nuevo usuario a la base de datos mediante
+   una solicitud POST.
+    """
+    with self.client:
+        response = self.client.post(
+            '/',
+            data=dict(username='danmichael', email='danmichael@test.com'),
+            follow_redirects=True
+        )
+        self.assertEqual(response.status_code, 200)
 
 if __name__ == '__main__':
     unittest.main()

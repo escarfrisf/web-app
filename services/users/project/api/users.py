@@ -1,24 +1,24 @@
 # services/users/project/api/users.py
 
-from flask import Blueprint, request
+from flask import Blueprint, request, render_template
 from flask_restful import Resource, Api
 
 from project import db
 from project.api.models import User
 from sqlalchemy import exc
-#from flask import Blueprint
-#from flask_restful import Resource, Api
+# from flask import Blueprint
+# from flask_restful import Resource, Api
 
-users_blueprint = Blueprint('users', __name__)
+users_blueprint = Blueprint('users', __name__, template_folder='./templates')
 api = Api(users_blueprint)
 
 
 class UsersPing(Resource):
     def get(self):
         return {
-        'status': 'success',
-        'message': 'pong!'
-    }
+                'status': 'success',
+                'message': 'pong!'
+               }
 
 
 class UsersList(Resource):
@@ -41,7 +41,7 @@ class UsersList(Resource):
                 response_object['message'] = f'{email} was added!'
                 return response_object, 201
             else:
-                response_object['message'] = 'Sorry. That email already exists.'
+                response_object['message'] = 'Sorry.That email already exists.'
                 return response_object, 400
         except exc.IntegrityError:
             db.session.rollback()
@@ -56,6 +56,7 @@ class UsersList(Resource):
                 }
             }
         return response_object, 200
+
 
 class Users(Resource):
     def get(self, user_id):
@@ -81,6 +82,18 @@ class Users(Resource):
                 return response_object, 200
         except ValueError:
             return response_object, 404
+
+
+@users_blueprint.route('/', methods=['GET', 'POST'])
+def index():
+    if request.method == 'POST':
+        username = request.form['username']
+        email = request.form['email']
+        db.session.add(User(username=username, email=email))
+        db.session.commit()
+    users = User.query.all()
+    return render_template('index.html', users=users)
+
 
 api.add_resource(Users, '/users/<user_id>')
 api.add_resource(UsersList, '/users')
