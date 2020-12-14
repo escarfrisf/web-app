@@ -5,7 +5,7 @@ exports[`UsersList renders a snapshot properly 1`] = `
   <h4
     className="box title is-4"
   >
-    dan.barrientos
+    danbarrientos
   </h4>
   <h4
     className="box title is-4"
