@@ -11,7 +11,7 @@ class BaseConfig:
     SECRET_KEY = os.environ.get('SECRET_KEY')  # nuevo
     DEBUG_TB_ENABLED = False
     DEBUG_TB_INTERCEPT_REDIRECTS = False
-    BCRYPT_LOG_ROUNDS = 13  #nuevo
+    BCRYPT_LOG_ROUNDS = 13
     TOKEN_EXPIRATION_DAYS = 30    # nuevo
     TOKEN_EXPIRATION_SECONDS = 0  # nuevo
 

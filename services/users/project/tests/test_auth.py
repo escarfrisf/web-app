@@ -4,8 +4,8 @@
 import json
 import unittest
 
-from project import db
-from project.api.models import User
+# from project import db
+# from project.api.models import User
 from project.tests.base import BaseTestCase
 from project.tests.utils import add_user
 # import time
@@ -14,6 +14,7 @@ from flask import current_app
 
 class TestAuthBlueprint(BaseTestCase):
     pass
+
 
 def test_user_registration(self):
     with self.client:
@@ -40,7 +41,7 @@ def test_user_registration_duplicate_email(self):
         response = self.client.post(
             '/auth/register',
             data=json.dumps({
-                'username': abel.huanca,
+                'username': 'abel.huanca',
                 'email': 'test@test.com',
                 'password': 'test'
             }),
@@ -51,6 +52,7 @@ def test_user_registration_duplicate_email(self):
         self.assertIn(
             'Sorry. That user already exists.', data['message'])
         self.assertIn('fail', data['status'])
+
 
 def test_user_registration_duplicate_username(self):
     add_user('test', 'test@test.com', 'test')
@@ -70,6 +72,7 @@ def test_user_registration_duplicate_username(self):
             'Sorry. That user already exists.', data['message'])
         self.assertIn('fail', data['status'])
 
+
 def test_user_registration_invalid_json(self):
     with self.client:
         response = self.client.post(
@@ -81,6 +84,7 @@ def test_user_registration_invalid_json(self):
         self.assertEqual(response.status_code, 400)
         self.assertIn('Invalid payload.', data['message'])
         self.assertIn('fail', data['status'])
+
 
 def test_user_registration_invalid_json_keys_no_username(self):
     with self.client:
@@ -97,6 +101,7 @@ def test_user_registration_invalid_json_keys_no_username(self):
         self.assertIn('Invalid payload.', data['message'])
         self.assertIn('fail', data['status'])
 
+
 def test_user_registration_invalid_json_keys_no_email(self):
     with self.client:
         response = self.client.post(
@@ -112,6 +117,7 @@ def test_user_registration_invalid_json_keys_no_email(self):
         self.assertIn('Invalid payload.', data['message'])
         self.assertIn('fail', data['status'])
 
+
 def test_user_registration_invalid_json_keys_no_password(self):
     with self.client:
         response = self.client.post(
@@ -126,6 +132,7 @@ def test_user_registration_invalid_json_keys_no_password(self):
         self.assertEqual(response.status_code, 400)
         self.assertIn('Invalid payload.', data['message'])
         self.assertIn('fail', data['status'])
+
 
 def test_registered_user_login(self):
     with self.client:
@@ -145,6 +152,7 @@ def test_registered_user_login(self):
         self.assertTrue(response.content_type == 'application/json')
         self.assertEqual(response.status_code, 200)
 
+
 def test_not_registered_user_login(self):
     with self.client:
         response = self.client.post(
@@ -160,6 +168,7 @@ def test_not_registered_user_login(self):
         self.assertTrue(data['message'] == 'User does not exist.')
         self.assertTrue(response.content_type == 'application/json')
         self.assertEqual(response.status_code, 404)
+
 
 def test_valid_logout(self):
     add_user('test', 'test@test.com', 'test')
@@ -184,29 +193,29 @@ def test_valid_logout(self):
         self.assertTrue(data['message'] == 'Successfully logged out.')
         self.assertEqual(response.status_code, 200)
 
-def test_invalid_logout_expired_token(self):
-    add_user('test', 'test@test.com', 'test')
-    with self.client:
-        resp_login = self.client.post(
-            '/auth/login',
-            data=json.dumps({
-                'email': 'test@test.com',
-                'password': 'test'
-            }),
-            content_type='application/json'
-        )
-        # invalid token logout
-        time.sleep(4)
-        token = json.loads(resp_login.data.decode())['auth_token']
-        response = self.client.get(
-            '/auth/logout',
-            headers={'Authorization': f'Bearer {token}'}
-        )
-        data = json.loads(response.data.decode())
-        self.assertTrue(data['status'] == 'fail')
-        self.assertTrue(
-            data['message'] == 'Signature expired. Please log in again.')
-        self.assertEqual(response.status_code, 401)
+# def test_invalid_logout_expired_token(self):
+#    add_user('test', 'test@test.com', 'test')
+#    with self.client:
+#        resp_login = self.client.post(
+#           '/auth/login',
+#           data=json.dumps({
+#               'email': 'test@test.com',
+#               'password': 'test'
+#           }),
+#            content_type='application/json'
+#        )
+#        # invalid token logout
+#        token = json.loads(resp_login.data.decode())['auth_token']
+#        response = self.client.get(
+#            '/auth/logout',
+#            headers={'Authorization': f'Bearer {token}'}
+#        )
+#        data = json.loads(response.data.decode())
+#        self.assertTrue(data['status'] == 'fail')
+#       self.assertTrue(
+#            data['message'] == 'Signature expired. Please log in again.')
+#        self.assertEqual(response.status_code, 401)
+
 
 def test_invalid_logout(self):
     with self.client:
@@ -244,6 +253,7 @@ def test_invalid_logout_expired_token(self):
             data['message'] == 'Signature expired. Please log in again.')
         self.assertEqual(response.status_code, 401)
 
+
 def test_user_status(self):
     add_user('test', 'test@test.com', 'test')
     with self.client:
@@ -267,6 +277,7 @@ def test_user_status(self):
         self.assertTrue(data['data']['email'] == 'test@test.com')
         self.assertTrue(data['data']['active'] is True)
         self.assertEqual(response.status_code, 200)
+
 
 def test_invalid_status(self):
     with self.client:

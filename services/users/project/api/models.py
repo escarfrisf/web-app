@@ -3,7 +3,6 @@
 
 from sqlalchemy.sql import func
 
-from project import db
 from project import db, bcrypt
 from flask import current_app
 import datetime
@@ -35,7 +34,7 @@ class User(db.Model):
             'email': self.email,
             'active': self.active
         }
-     
+
     def encode_auth_token(self, user_id):
         """Genera el token de auth"""
         try:
@@ -59,7 +58,8 @@ class User(db.Model):
     @staticmethod
     def decode_auth_token(auth_token):
         """
-    Decodifica el token de autenticación -:param auth_token: - :return: integer|string
+    Decodifica el token de autenticación -:
+    param auth_token: - :return: integer|string
         """
         try:
             payload = jwt.decode(

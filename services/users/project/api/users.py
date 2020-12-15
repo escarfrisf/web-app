@@ -36,7 +36,9 @@ class UsersList(Resource):
         try:
             user = User.query.filter_by(email=email).first()
             if not user:
-                db.session.add(User(username=username, email=email, password=password))
+                db.session.add(User(username=username,
+                                    email=email,
+                                    password=password))
                 db.session.commit()
                 response_object['status'] = 'success'
                 response_object['message'] = f'{email} was added!'
@@ -96,7 +98,6 @@ def index():
         db.session.commit()
     users = User.query.all()
     return render_template('index.html', users=users)
-
 
 
 api.add_resource(Users, '/users/<user_id>')

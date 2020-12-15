@@ -9,7 +9,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 from flask_cors import CORS
 # from sqlalchemy import exc
 from flask_migrate import Migrate
-from flask_bcrypt import Bcrypt 
+from flask_bcrypt import Bcrypt
 
 
 # instantiate the db
@@ -17,7 +17,7 @@ db = SQLAlchemy()
 toolbar = DebugToolbarExtension()
 cors = CORS()
 migrate = Migrate()
-bcrypt = Bcrypt() 
+bcrypt = Bcrypt()
 
 
 # nuevo
@@ -42,7 +42,6 @@ def create_app(script_info=None):
     app.register_blueprint(users_blueprint)
     from project.api.auth import auth_blueprint  # nuevo
     app.register_blueprint(auth_blueprint)       # nuevo
-
 
     # contexto shell para flask cli
     @app.shell_context_processor

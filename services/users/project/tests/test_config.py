@@ -19,7 +19,7 @@ class TestDevelopmentConfig(TestCase):
     def test_app_is_development(self):
         self.assertEqual(
              app.config['SECRET_KEY'], os.environ.get('SECRET_KEY')
-        )  
+        )
         self.assertFalse(current_app is None)
         self.assertTrue(
             app.config['SQLALCHEMY_DATABASE_URI'] ==
@@ -58,14 +58,14 @@ class TestProductionConfig(TestCase):
         return app
 
     def test_app_is_production(self):
-        self.assertEqual(
-        app.config['SECRET_KEY'], os.environ.get('SECRET_KEY')
-        )
+        self.assertEqual(app.config['SECRET_KEY'],
+                         os.environ.get('SECRET_KEY'))
         self.assertFalse(app.config['TESTING'])
         self.assertFalse(app.config['DEBUG_TB_ENABLED'])  # nuevo
         self.assertTrue(app.config['BCRYPT_LOG_ROUNDS'] == 13)  # nuevo
         self.assertTrue(app.config['TOKEN_EXPIRATION_DAYS'] == 30)    # nuevo
         self.assertTrue(app.config['TOKEN_EXPIRATION_SECONDS'] == 0)  # nuevo
+
 
 if __name__ == '__main__':
     unittest.main()
